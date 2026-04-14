@@ -1,117 +1,75 @@
-import { useState } from 'react'
-
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    let humidity = 40;
+    return (
+        <>
+            <main>
+                <section>
+                    <div>
+                        <a></a>
+                        <a></a>
+                    </div>
+                    <div>
+                        <img></img>
+                        <p>2<span>7</span><span>°c</span></p>
+                        <p>Few Clouds</p>
+                        <div>
+                            <p>Today</p>
+                            <p>Tue 14 Apr</p>
+                        </div>
+                        <div>
+                            <img></img>
+                            <p>Salvador</p>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div>
+                        <a></a>
+                        <a></a>
+                    </div>
+                    <div>
+                        <div>
+                            <p>Tomorrow</p>
+                            <img></img>
+                            <div>
+                                <p>2<span>7</span><span>°</span><span>C</span></p>
+                                <p>2<span>5</span><span>°</span><span>C</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <p>Today's Highlights</p>
+                    <div>
+                        <div className="w-full max-w-[328px] h-48 bg-[#1E213A] flex flex-col items-center justify-center">
+                            <h2 className="text-medium text-base text-center text-[#E7E7EB]">
+                                Humidity
+                            </h2>
+                            <div className="flex items-end h-20 mb-4">
+                                <h3 className="text-[#E7E7EB] text-6xl font-bold">{humidity}</h3>
+                                <h4 className="text-[#E7E7EB] text-4xl mb-2 ml-1 text-right">%</h4>
+                            </div>
+                            <div className="w-[70%] font-bold text-xs flex justify-between text-[#A09FB1]">
+                                <p>0</p>
+                                <p>50</p>
+                                <p>100</p>
+                            </div>
+                            <div className="flex items-center w-[70%] h-2 bg-[#E7E7EB] rounded-3xl">
+                                <div
+                                    className="h-2 bg-[#FFEC65] rounded-3xl m-0 p-0"
+                                    style={{ width: `${humidity}%` }}
+                                />
+                            </div>
+                            <div className="w-[70%] text-right font-bold text-[#A09FB1]">%</div>
+                        </div>
+                    </div>
+                    <p>
+                        Created by <span>Gabriel Mercês Dev</span> - devChallenges.io
+                    </p>
+                </section>
+            </main>
+        </>
+    )
 }
 
 export default App
