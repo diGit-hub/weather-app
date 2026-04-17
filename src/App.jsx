@@ -37,7 +37,16 @@ function App() {
         }
     };
     useEffect(() => {
-        fetchWeather('Salvador,BR');
+        fetch('https://ipinfo.io/json')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.city) {
+                    fetchWeather(`${data.city},${data.country || ''}`);
+                } else {
+                    fetchWeather('London');
+                }
+            })
+            .catch(() => fetchWeather('London'));
     }, []);
     const handleSearch = (city) => {
         if (city.trim()) {
