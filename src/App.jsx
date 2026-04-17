@@ -1,75 +1,121 @@
+import { useState, useEffect } from 'react';
+import WeatherCard from './components/WeatherCard';
+import Forecast from './components/Forecast';
+import Highlights from './components/Highlights';
 function App() {
-    let humidity = 40;
-    return (
-        <>
-            <main>
-                <section>
-                    <div>
-                        <a></a>
-                        <a></a>
-                    </div>
-                    <div>
-                        <img></img>
-                        <p>2<span>7</span><span>°c</span></p>
-                        <p>Few Clouds</p>
-                        <div>
-                            <p>Today</p>
-                            <p>Tue 14 Apr</p>
-                        </div>
-                        <div>
-                            <img></img>
-                            <p>Salvador</p>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <div>
-                        <a></a>
-                        <a></a>
-                    </div>
-                    <div>
-                        <div>
-                            <p>Tomorrow</p>
-                            <img></img>
-                            <div>
-                                <p>2<span>7</span><span>°</span><span>C</span></p>
-                                <p>2<span>5</span><span>°</span><span>C</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <p>Today's Highlights</p>
-                    <div>
-                        <div className="w-full max-w-[328px] h-48 bg-[#1E213A] flex flex-col items-center justify-center">
-                            <h2 className="text-medium text-base text-center text-[#E7E7EB]">
-                                Humidity
-                            </h2>
-                            <div className="flex items-end h-20 mb-4">
-                                <h3 className="text-[#E7E7EB] text-6xl font-bold">{humidity}</h3>
-                                <h4 className="text-[#E7E7EB] text-4xl mb-2 ml-1 text-right">%</h4>
-                            </div>
-                            <div className="w-[70%] font-bold text-xs flex justify-between text-[#A09FB1]">
-                                <p>0</p>
-                                <p>50</p>
-                                <p>100</p>
-                            </div>
-                            <div className="flex items-center w-[70%] h-2 bg-[#E7E7EB] rounded-3xl">
-                                <div
-                                    className="h-2 bg-[#FFEC65] rounded-3xl m-0 p-0"
-                                    style={{ width: `${humidity}%` }}
-                                />
-                            </div>
-                            <div className="w-[70%] text-right font-bold text-[#A09FB1]">%</div>
-                        </div>
-                    </div>
-                    <p>
-                        Created by <span>Gabriel Mercês Dev</span> - devChallenges.io
-                    </p>
-                </section>
-            </main>
-        </>
-    )
-}
+    const [weather, setWeather] = useState(null);
+    const [forecast, setForecast] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [unit, setUnit] = useState('metric');
+    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+    const fetchWeather = async (city) => {
+        try {
+            setLoading(true);
+            setError(null);
 
-export default App
+            const weatherRes = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+            );
+
+            if (!weatherRes.ok) throw new Error('City not found');
+            const weatherData = await weatherRes.json();
+            setWeather(weatherData);
+
+            const forecastRes = await fetch(
+                `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
+            );
+
+            if (forecastRes.ok) {
+                const forecastData = await forecastRes.json();
+                setForecast(forecastData);
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchWeather('Salvador,BR');
+    }, []);
+    const handleSearch = (city) => {
+        if (city.trim()) {
+            fetchWeather(city);
+        }
+    };
+
+    const fetchWeatherByCoords = async (lat, lon) => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const weatherRes = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+            );
+            if (!weatherRes.ok) throw new Error('Location not found');
+            const weatherData = await weatherRes.json();
+            setWeather(weatherData);
+
+            const forecastRes = await fetch(
+                `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+            );
+            if (forecastRes.ok) {
+                const forecastData = await forecastRes.json();
+                setForecast(forecastData);
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGeolocate = () => {
+        if (!navigator.geolocation) {
+            setError('Geolocation is not supported by your browser');
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (pos) => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+            () => setError('Unable to retrieve your location')
+        );
+    };
+    const toggleUnit = (newUnit) => {
+        setUnit(newUnit);
+    };
+    return (
+        <div className="bg-[#1E213A] w-screen min-h-screen flex flex-col items-center md:flex-row">
+            {/* Sidebar */}
+            <section className="bg-[#1E213A] flex flex-col w-screen h-screen overflow-hidden md:w-[30%] md:min-w-[380px] md:m-auto">
+                <WeatherCard weather={weather} onSearch={handleSearch} onGeolocate={handleGeolocate} unit={unit} />
+            </section>
+            {/* Main */}
+            <div className="w-full h-fit min-h-screen flex flex-col items-center bg-[#100E1D] md:w-[70%] md:min-w-[580px] md:max-h-screen">
+                {/* °C / °F Toggle */}
+                <div className="flex justify-end items-end h-20 w-64 gap-5 md:max-w-2xl md:w-full">
+                    <button
+                        onClick={() => toggleUnit('metric')}
+                        className={`w-10 h-10 pr-1 pt-1 text-center text-xl font-bold rounded-full ${unit === 'metric' ? 'bg-[#E7E7EB] text-[#110E3C]' : 'bg-[#585676] text-[#E7E7EB]'}`}
+                    >°C</button>
+                    <button
+                        onClick={() => toggleUnit('imperial')}
+                        className={`w-10 h-10 pr-1 pt-1 text-center text-xl font-bold rounded-full ${unit === 'imperial' ? 'bg-[#E7E7EB] text-[#110E3C]' : 'bg-[#585676] text-[#E7E7EB]'}`}
+                    >°F</button>
+                </div>
+                {/* Forecast - 5 days */}
+                <section className="w-full md:px-5">
+                    <Forecast forecast={forecast} unit={unit} />
+                </section>
+                {/* Highlights */}
+                <Highlights weather={weather} unit={unit} />
+                <footer className="py-5 w-full flex flex-row justify-center items-center text-[#A09FB1]">
+                    <h4 className="text-sm font-medium text-center">Created by</h4>
+                    <h2 className="font-bold text-sm text-center mx-1">Gabriel Mercês Dev</h2>
+                    <h3 className="font-semibold text-sm text-center">- devChallenges.io</h3>
+                </footer>
+            </div>
+        </div>
+    );
+}
+export default App;
